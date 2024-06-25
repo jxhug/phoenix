@@ -45,18 +45,12 @@ struct GameListItem: View {
                 
                 //toggle hidden button
                 ContextButton(action: {
-                    gameViewModel.toggleHiddenFromID(game.id)
-                    if gameViewModel.selectedGameIDs.contains(game.id), let firstID = filteredGames.first?.id {
-                        gameViewModel.selectedGameIDs = [firstID]
-                    }
+                    hide(id: game.id)
                 }, symbol: "eye.slash", text: String(localized: ("context_HideGame")))
                 
                 //delete game button
                 ContextButton(action: {
-                    gameViewModel.deleteGameFromID(game.id)
-                    if gameViewModel.selectedGameIDs.contains(game.id), let firstID = filteredGames.first?.id {
-                        gameViewModel.selectedGameIDs = [firstID]
-                    }
+                    delete(id: game.id)
                 }, symbol: "trash", text: String(localized: "context_DeleteGame"))
 
                 Divider()
@@ -156,6 +150,30 @@ struct GameListItem: View {
             if let idx = gameViewModel.games.firstIndex(where: { $0.id == id }) {
                 gameViewModel.games[idx].status = status
             }
+        }
+        gameViewModel.selectedGameIDs = []
+        gameViewModel.saveGames()
+    }
+    
+    func hide(id: UUID) {
+        if gameViewModel.selectedGameIDs.count > 1 {
+            for id in gameViewModel.selectedGameIDs {
+                gameViewModel.toggleHiddenFromID(id)
+            }
+        } else {
+            gameViewModel.toggleHiddenFromID(id)
+        }
+        gameViewModel.selectedGameIDs = []
+        gameViewModel.saveGames()
+    }
+    
+    func delete(id: UUID) {
+        if gameViewModel.selectedGameIDs.count > 1 {
+            for id in gameViewModel.selectedGameIDs {
+                gameViewModel.deleteGameFromID(id)
+            }
+        } else {
+            gameViewModel.deleteGameFromID(id)
         }
         gameViewModel.selectedGameIDs = []
         gameViewModel.saveGames()

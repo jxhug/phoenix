@@ -205,12 +205,57 @@ struct GameDetailView: View {
                     showScreenshots ? checkScreenshots() : ()
                 }
             }
-        } else {
-            Text("FUCL")
-                .navigationTitle("Games")
-                .onChange(of: gameViewModel.selectedGameIDs) { _ in
-                    print(gameViewModel.selectedGameIDs)
+        } else if !gameViewModel.selectedGameIDs.isEmpty {
+            VStack {
+                Image("GameStackIcon")
+                    .font(.system(size: 80))
+                    .foregroundColor(.gray)
+                Text("Multiple games selected")
+                    .font(.title)
+                    .fontWeight(.semibold)
+                    .foregroundColor(.gray)
+                HStack {
+                    Button(action: {
+                        for id in gameViewModel.selectedGameIDs {
+                            gameViewModel.toggleHiddenFromID(id)
+                        }
+                    }, label: {
+                        Text("Hide Games")
+                            .padding(.horizontal, 5)
+                            .padding(.vertical, 3)
+                    })
+                    .buttonStyle(PlainButtonStyle())
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 5)
+                            .stroke(Color.secondary.opacity(0.5), lineWidth: 1)
+                    )
+                    Button(action: {
+                        for id in gameViewModel.selectedGameIDs {
+                            gameViewModel.deleteGameFromID(id)
+                        }
+                    }, label: {
+                        Text("Delete Games")
+                            .padding(.horizontal, 5)
+                            .padding(.vertical, 3)
+                    })
+                    .buttonStyle(PlainButtonStyle())
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 5)
+                            .stroke(Color.secondary.opacity(0.5), lineWidth: 1)
+                    )
+
                 }
+                
+            }
+            .navigationTitle("Games")
+            .onChange(of: gameViewModel.selectedGameIDs) { _ in
+                print(gameViewModel.selectedGameIDs)
+            }
+        } else {
+            Text("No game selected")
+                .font(.title)
+                .fontWeight(.semibold)
+                .foregroundColor(.gray)
         }
     }
     
